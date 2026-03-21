@@ -191,3 +191,4 @@ Validated locally during setup:
 - `backend`: `python3 scripts/train_model.py`
 
 The OCR extraction regex was also smoke-tested against a sample report string.
+# HealthSense
