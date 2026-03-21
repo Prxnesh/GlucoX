@@ -1,4 +1,4 @@
-from prisma import Prisma
+from app.prisma_client import Prisma
 
 db = Prisma()
 

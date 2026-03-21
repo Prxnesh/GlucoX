@@ -20,20 +20,20 @@ enum RecordSource {
 }
 
 model User {
-  id           String             @id @default(cuid())
-  name         String
-  email        String             @unique
-  passwordHash String
-  createdAt    DateTime           @default(now())
-  updatedAt    DateTime           @updatedAt
+  id            String             @id @default(cuid())
+  name          String
+  email         String             @unique
+  passwordHash  String
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
   healthRecords HealthRecord[]
-  reports      ReportExtraction[]
+  reports       ReportExtraction[]
 }
 
 model HealthRecord {
-  id            String          @id @default(cuid())
+  id            String            @id @default(cuid())
   userId        String
-  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   source        RecordSource
   riskScore     Float
   category      RiskCategory
@@ -47,25 +47,24 @@ model HealthRecord {
   hba1c         Float?
   cholesterol   Float?
   insights      Json
-  recordedAt    DateTime        @default(now())
-  reportId      String?         @unique
+  recordedAt    DateTime          @default(now())
+  reportId      String?           @unique
   report        ReportExtraction? @relation(fields: [reportId], references: [id])
 
   @@index([userId, recordedAt(sort: Desc)])
 }
 
 model ReportExtraction {
-  id          String       @id @default(cuid())
-  userId      String
-  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  rawText     String
-  glucose     Float?
-  hba1c       Float?
-  cholesterol Float?
-  insights    Json
-  createdAt   DateTime     @default(now())
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rawText      String
+  glucose      Float?
+  hba1c        Float?
+  cholesterol  Float?
+  insights     Json
+  createdAt    DateTime      @default(now())
   healthRecord HealthRecord?
 
   @@index([userId, createdAt(sort: Desc)])
 }
-
