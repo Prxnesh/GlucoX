@@ -4,6 +4,7 @@
 .venv/
 __pycache__/
 *.pyc
+*.egg-info/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -11,6 +12,7 @@ node_modules/
 .next/
 dist/
 coverage/
+*.tsbuildinfo
 frontend/node_modules/
 frontend/.next/
 frontend/out/
@@ -18,4 +20,3 @@ backend/.venv/
 backend/.pytest_cache/
 backend/app/ml/artifacts/
 backend/prisma/migrations/
-

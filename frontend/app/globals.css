@@ -1,0 +1,65 @@
+@import "../styles/theme.css";
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --radius-sm: calc(var(--radius) - 0.75rem);
+  --radius-md: calc(var(--radius) - 0.45rem);
+  --radius-lg: calc(var(--radius) - 0.2rem);
+  --radius-xl: var(--radius);
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(143, 255, 218, 0.4), transparent 30%),
+    radial-gradient(circle at top right, rgba(112, 196, 255, 0.28), transparent 24%),
+    linear-gradient(180deg, #f7fffc 0%, #edf8ff 100%);
+  color: hsl(var(--foreground));
+  font-feature-settings: "ss01" on, "cv02" on, "cv03" on;
+}
+
+::selection {
+  background: rgba(0, 168, 132, 0.18);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.74);
+  backdrop-filter: blur(18px);
+}
+
+.dashboard-grid {
+  background-image:
+    linear-gradient(rgba(37, 107, 120, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 107, 120, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
