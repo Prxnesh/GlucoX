@@ -1,6 +1,6 @@
-# DiaSense
+# GlucoX
 
-DiaSense is a production-oriented diabetes risk prediction and health insights platform built with a clean frontend/backend split:
+GlucoX is a production-oriented diabetes risk prediction and health insights platform built with a clean frontend/backend split:
 
 - `frontend`: Next.js App Router, TypeScript, Tailwind CSS, Recharts, Framer Motion
 - `backend`: FastAPI, modular REST routes, Prisma-backed PostgreSQL, OCR services, and scikit-learn ML

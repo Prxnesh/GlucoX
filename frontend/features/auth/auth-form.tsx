@@ -74,7 +74,7 @@ export function AuthForm({ mode }: Props) {
         </div>
         <div>
           <CardTitle className="font-[var(--font-display)] text-3xl">
-            {mode === "login" ? "Welcome back" : "Create your DiaSense account"}
+            {mode === "login" ? "Welcome back" : "Create your GlucoX account"}
           </CardTitle>
           <CardDescription className="mt-2 text-sm text-muted-foreground">
             {mode === "login"
@@ -100,7 +100,7 @@ export function AuthForm({ mode }: Props) {
             <span className="text-sm font-medium">Email address</span>
             <div className="relative">
               <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input className="pl-11" placeholder="you@diasense.app" {...form.register("email")} />
+              <Input className="pl-11" placeholder="you@glucox.app" {...form.register("email")} />
             </div>
             <FieldError message={form.formState.errors.email?.message} />
           </label>
@@ -121,7 +121,7 @@ export function AuthForm({ mode }: Props) {
           </Button>
 
           <p className="text-center text-sm text-muted-foreground">
-            {mode === "login" ? "New to DiaSense?" : "Already have an account?"}{" "}
+            {mode === "login" ? "New to GlucoX?" : "Already have an account?"}{" "}
             <Link className="font-semibold text-foreground underline-offset-4 hover:underline" href={mode === "login" ? "/signup" : "/login"}>
               {mode === "login" ? "Create one" : "Log in"}
             </Link>

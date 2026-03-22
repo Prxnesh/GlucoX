@@ -24,7 +24,7 @@ export function SiteHeader() {
             <HeartPulse className="h-5 w-5" />
           </div>
           <div>
-            <div className="font-[var(--font-display)] text-lg font-semibold tracking-tight">DiaSense</div>
+            <div className="font-[var(--font-display)] text-lg font-semibold tracking-tight">GlucoX</div>
             <div className="text-xs text-muted-foreground">Diabetes risk intelligence</div>
           </div>
         </Link>

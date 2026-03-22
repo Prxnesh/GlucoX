@@ -26,7 +26,7 @@ export default function HomePage() {
             Diabetes insights that feel calm, clear, and actually useful.
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-8 text-slate-600 md:text-lg">
-            DiaSense combines machine learning, OCR-powered report extraction, and a premium dashboard so people can understand metabolic health without decoding spreadsheets or lab jargon.
+            GlucoX combines machine learning, OCR-powered report extraction, and a premium dashboard so people can understand metabolic health without decoding spreadsheets or lab jargon.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">

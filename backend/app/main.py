@@ -20,9 +20,9 @@ async def lifespan(_: FastAPI):
 
 
 app = FastAPI(
-    title="DiaSense API",
+    title="GlucoX API",
     version="0.1.0",
-    description="Prediction, OCR, and health history services for DiaSense.",
+    description="Prediction, OCR, and health history services for GlucoX.",
     lifespan=lifespan,
 )
 

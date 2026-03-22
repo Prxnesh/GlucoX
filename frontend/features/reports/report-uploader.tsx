@@ -51,7 +51,7 @@ export function ReportUploader({
       <CardHeader>
         <CardTitle className="font-[var(--font-display)] text-2xl">Report analyzer</CardTitle>
         <CardDescription>
-          Upload a PDF or lab image and DiaSense will extract glucose, HbA1c, and cholesterol.
+          Upload a PDF or lab image and GlucoX will extract glucose, HbA1c, and cholesterol.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">

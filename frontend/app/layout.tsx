@@ -18,7 +18,7 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
-  title: "DiaSense",
+  title: "GlucoX",
   description: "Diabetes risk prediction and health insights platform",
 };
 

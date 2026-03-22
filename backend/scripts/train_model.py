@@ -5,7 +5,7 @@ from app.ml.training import train_model
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Train the DiaSense diabetes risk model.")
+    parser = argparse.ArgumentParser(description="Train the GlucoX diabetes risk model.")
     parser.add_argument(
         "--output",
         default="app/ml/artifacts/diabetes_model.pkl",
