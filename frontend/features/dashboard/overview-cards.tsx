@@ -82,14 +82,14 @@ function MetricCard({
   accent: "emerald" | "amber" | "rose" | "sky";
 }) {
   const accentStyles = {
-    emerald: "from-emerald-400/15 to-emerald-200/0 text-emerald-700 bg-emerald-50",
-    amber: "from-amber-400/15 to-amber-200/0 text-amber-700 bg-amber-50",
-    rose: "from-rose-400/15 to-rose-200/0 text-rose-700 bg-rose-50",
-    sky: "from-sky-400/15 to-sky-200/0 text-sky-700 bg-sky-50",
+    emerald: "from-emerald-400/15 to-emerald-200/0 text-emerald-700 bg-emerald-50 dark:from-emerald-500/25 dark:to-emerald-500/0 dark:bg-emerald-500/15 dark:text-emerald-200",
+    amber: "from-amber-400/15 to-amber-200/0 text-amber-700 bg-amber-50 dark:from-amber-500/25 dark:to-amber-500/0 dark:bg-amber-500/15 dark:text-amber-200",
+    rose: "from-rose-400/15 to-rose-200/0 text-rose-700 bg-rose-50 dark:from-rose-500/25 dark:to-rose-500/0 dark:bg-rose-500/15 dark:text-rose-200",
+    sky: "from-sky-400/15 to-sky-200/0 text-sky-700 bg-sky-50 dark:from-sky-500/25 dark:to-sky-500/0 dark:bg-sky-500/15 dark:text-sky-200",
   }[accent];
 
   return (
-    <Card className="bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.75))]">
+    <Card className="bg-[linear-gradient(180deg,rgba(255,255,255,0.9),rgba(255,255,255,0.75))] dark:bg-[linear-gradient(180deg,rgba(18,31,44,0.8),rgba(14,24,36,0.65))]">
       <CardContent className="pt-6">
         <div className={`inline-flex h-12 w-12 items-center justify-center rounded-[1.25rem] bg-gradient-to-br ${accentStyles}`}>
           <Icon className="h-5 w-5" />

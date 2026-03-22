@@ -8,6 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ChartTooltip } from "@/features/dashboard/chart-tooltip";
 
 export function RiskHistoryChart({ records }: { records: HealthRecord[] }) {
+  const axisColor = "rgb(var(--chart-axis))";
+  const cursorColor = "rgb(var(--chart-cursor) / 0.24)";
+
   const chartData = [...records]
     .reverse()
     .map((record) => ({
@@ -42,14 +45,14 @@ export function RiskHistoryChart({ records }: { records: HealthRecord[] }) {
               dataKey="date"
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#557086", fontSize: 12 }}
+              tick={{ fill: axisColor, fontSize: 12 }}
               dy={8}
             />
             <YAxis
               yAxisId="left"
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#557086", fontSize: 12 }}
+              tick={{ fill: axisColor, fontSize: 12 }}
               width={40}
             />
             <YAxis
@@ -57,11 +60,11 @@ export function RiskHistoryChart({ records }: { records: HealthRecord[] }) {
               orientation="right"
               tickLine={false}
               axisLine={false}
-              tick={{ fill: "#557086", fontSize: 12 }}
+              tick={{ fill: axisColor, fontSize: 12 }}
               width={40}
             />
             <Tooltip
-              cursor={{ stroke: "rgba(72, 123, 156, 0.18)", strokeWidth: 1.5, strokeDasharray: "4 4" }}
+              cursor={{ stroke: cursorColor, strokeWidth: 1.5, strokeDasharray: "4 4" }}
               content={
                 <ChartTooltip
                   formatter={(value, name) =>

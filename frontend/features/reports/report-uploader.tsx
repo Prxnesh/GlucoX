@@ -56,12 +56,12 @@ export function ReportUploader({
       </CardHeader>
       <CardContent className="space-y-5">
         <button
-          className="group flex w-full flex-col items-center justify-center gap-3 rounded-[1.75rem] border border-dashed border-sky-200 bg-sky-50/65 px-6 py-10 text-center transition-colors hover:border-sky-300 hover:bg-sky-50"
+          className="group flex w-full flex-col items-center justify-center gap-3 rounded-[1.75rem] border border-dashed border-sky-200 bg-sky-50/65 px-6 py-10 text-center transition-colors hover:border-sky-300 hover:bg-sky-50 dark:border-sky-500/35 dark:bg-sky-500/10 dark:hover:border-sky-400/45 dark:hover:bg-sky-500/14"
           type="button"
           onClick={() => inputRef.current?.click()}
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-white shadow-sm">
-            <ScanSearch className="h-6 w-6 text-sky-600" />
+          <div className="flex h-14 w-14 items-center justify-center rounded-[1.25rem] bg-white shadow-sm dark:bg-white/12">
+            <ScanSearch className="h-6 w-6 text-sky-600 dark:text-sky-300" />
           </div>
           <div>
             <p className="text-sm font-semibold">Drop in a report or browse files</p>
@@ -78,11 +78,11 @@ export function ReportUploader({
           />
         </button>
 
-        <div className="rounded-[1.5rem] bg-white/70 px-4 py-4">
+        <div className="rounded-[1.5rem] bg-white/70 px-4 py-4 dark:bg-white/6">
           {selectedFile ? (
             <div className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-50 text-sky-700">
+                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-sky-50 text-sky-700 dark:bg-sky-500/16 dark:text-sky-200">
                   <FileUp className="h-4 w-4" />
                 </div>
                 <div>
@@ -101,7 +101,7 @@ export function ReportUploader({
           )}
         </div>
 
-        {error ? <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
+        {error ? <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:bg-rose-500/18 dark:text-rose-200">{error}</p> : null}
       </CardContent>
     </Card>
   );

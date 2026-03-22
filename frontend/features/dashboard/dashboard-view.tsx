@@ -68,7 +68,7 @@ export function DashboardView() {
   if (!ready || (loading && !snapshot.records.length && !snapshot.reports.length && !snapshot.latest_prediction)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="flex items-center gap-3 rounded-full bg-white/80 px-5 py-3 shadow-[var(--shadow-card)]">
+        <div className="flex items-center gap-3 rounded-full bg-white/80 px-5 py-3 shadow-[var(--shadow-card)] dark:bg-white/10">
           <LoaderCircle className="h-4 w-4 animate-spin text-primary" />
           <span className="text-sm font-medium">Preparing your dashboard...</span>
         </div>
@@ -81,7 +81,7 @@ export function DashboardView() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8">
-      <section className="dashboard-grid overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/50 px-6 py-8 shadow-[var(--shadow-soft)]">
+      <section className="dashboard-grid overflow-hidden rounded-[2.5rem] border border-white/70 bg-white/50 px-6 py-8 shadow-[var(--shadow-soft)] dark:border-white/12 dark:bg-white/6">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <div className="text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
@@ -98,7 +98,7 @@ export function DashboardView() {
       </section>
 
       {error ? (
-        <div className="mt-6 rounded-[1.75rem] bg-rose-50 px-5 py-4 text-sm text-rose-700">{error}</div>
+        <div className="mt-6 rounded-[1.75rem] bg-rose-50 px-5 py-4 text-sm text-rose-700 dark:bg-rose-500/18 dark:text-rose-200">{error}</div>
       ) : null}
 
       <section className="mt-8 grid gap-6 xl:grid-cols-[1.3fr,0.9fr]">

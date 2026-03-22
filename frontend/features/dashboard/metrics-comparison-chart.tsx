@@ -23,6 +23,9 @@ function metricColor(metric: string, value: number) {
 }
 
 export function MetricsComparisonChart({ latestRecord }: { latestRecord?: HealthRecord }) {
+  const axisColor = "rgb(var(--chart-axis))";
+  const cursorColor = "rgb(var(--chart-cursor) / 0.12)";
+
   const chartData = [
     { metric: "Glucose", value: latestRecord?.glucose ?? 0, unit: "mg/dL" },
     { metric: "HbA1c", value: latestRecord?.hba1c ?? 0, unit: "%" },
@@ -45,11 +48,11 @@ export function MetricsComparisonChart({ latestRecord }: { latestRecord?: Health
                 dataKey="metric"
                 tickLine={false}
                 axisLine={false}
-                tick={{ fill: "#557086", fontSize: 12 }}
+                tick={{ fill: axisColor, fontSize: 12 }}
               />
-              <YAxis tickLine={false} axisLine={false} tick={{ fill: "#557086", fontSize: 12 }} width={40} />
+              <YAxis tickLine={false} axisLine={false} tick={{ fill: axisColor, fontSize: 12 }} width={40} />
               <Tooltip
-                cursor={{ fill: "rgba(123, 170, 196, 0.08)" }}
+                cursor={{ fill: cursorColor }}
                 content={<ChartTooltip formatter={(value) => String(value)} />}
               />
               <Bar dataKey="value" radius={[16, 16, 6, 6]} name="Value">
@@ -60,7 +63,7 @@ export function MetricsComparisonChart({ latestRecord }: { latestRecord?: Health
             </BarChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex h-full items-center justify-center rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/70 text-center text-sm text-muted-foreground">
+          <div className="flex h-full items-center justify-center rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/70 text-center text-sm text-muted-foreground dark:border-white/14 dark:bg-white/6">
             Upload a blood report to unlock lab metric comparisons.
           </div>
         )}

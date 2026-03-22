@@ -21,7 +21,7 @@ export function HistoryTimeline({ records }: { records: HealthRecord[] }) {
         {records.length ? (
           <div className="space-y-4">
             {records.map((record) => (
-              <div key={record.id} className="relative rounded-[1.5rem] border border-white/70 bg-white/76 p-5">
+              <div key={record.id} className="relative rounded-[1.5rem] border border-white/70 bg-white/76 p-5 dark:border-white/12 dark:bg-white/6">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
                     <div className="text-sm font-semibold">{format(new Date(record.recorded_at), "MMM d, yyyy • h:mm a")}</div>
@@ -41,7 +41,7 @@ export function HistoryTimeline({ records }: { records: HealthRecord[] }) {
             ))}
           </div>
         ) : (
-          <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/70 px-4 py-10 text-center text-sm text-muted-foreground">
+          <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/70 px-4 py-10 text-center text-sm text-muted-foreground dark:border-white/14 dark:bg-white/6">
             Your timeline will appear here as soon as the first assessment is saved.
           </div>
         )}

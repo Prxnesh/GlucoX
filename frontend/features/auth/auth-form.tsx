@@ -114,7 +114,7 @@ export function AuthForm({ mode }: Props) {
             <FieldError message={form.formState.errors.password?.message} />
           </label>
 
-          {error ? <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
+          {error ? <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:bg-rose-500/18 dark:text-rose-200">{error}</p> : null}
 
           <Button className="w-full" size="lg" disabled={isPending}>
             {isPending ? "Securing your session..." : mode === "login" ? "Log in" : "Create account"}

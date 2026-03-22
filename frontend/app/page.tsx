@@ -19,7 +19,7 @@ export default function HomePage() {
     <PageShell>
       <section className="mx-auto grid max-w-7xl gap-10 px-4 pb-10 pt-10 md:px-8 xl:grid-cols-[1.12fr,0.88fr] xl:items-center">
         <motion.div {...fadeUp}>
-          <div className="inline-flex rounded-full border border-emerald-100 bg-emerald-50/90 px-4 py-2 text-sm font-medium text-emerald-700">
+          <div className="inline-flex rounded-full border border-emerald-100 bg-emerald-50/90 px-4 py-2 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/20 dark:text-emerald-200">
             Predict risk. Read reports. Track every signal.
           </div>
           <h1 className="mt-6 max-w-3xl font-[var(--font-display)] text-5xl font-semibold leading-[1.05] tracking-tight text-balance md:text-7xl">
@@ -45,7 +45,7 @@ export default function HomePage() {
               { value: "3 views", label: "for risk, labs, and trend history" },
               { value: "1 flow", label: "from raw data to next-step guidance" },
             ].map((item) => (
-              <div key={item.label} className="rounded-[1.75rem] bg-white/70 px-5 py-5 shadow-[var(--shadow-card)]">
+              <div key={item.label} className="rounded-[1.75rem] bg-white/70 px-5 py-5 shadow-[var(--shadow-card)] dark:bg-white/6">
                 <div className="font-[var(--font-display)] text-3xl font-semibold">{item.value}</div>
                 <div className="mt-2 text-sm text-muted-foreground">{item.label}</div>
               </div>
@@ -54,8 +54,8 @@ export default function HomePage() {
         </motion.div>
 
         <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.12 }} className="relative">
-          <div className="absolute -left-6 top-12 h-32 w-32 rounded-full bg-emerald-200/60 blur-3xl" />
-          <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-sky-200/60 blur-3xl" />
+          <div className="absolute -left-6 top-12 h-32 w-32 rounded-full bg-emerald-200/60 blur-3xl dark:bg-emerald-600/28" />
+          <div className="absolute right-0 top-0 h-36 w-36 rounded-full bg-sky-200/60 blur-3xl dark:bg-sky-600/26" />
           <Card className="relative overflow-hidden rounded-[2.5rem] p-2">
             <CardContent className="grid gap-4 p-4">
               <div className="rounded-[2rem] bg-[linear-gradient(135deg,#0f766e_0%,#38bdf8_100%)] p-6 text-white">
@@ -70,8 +70,8 @@ export default function HomePage() {
                   { icon: Brain, label: "ML engine", value: "Logistic model v1" },
                   { icon: ShieldCheck, label: "Health insight", value: "Gentle intervention advice" },
                 ].map((item) => (
-                  <div key={item.label} className="rounded-[1.6rem] bg-white/80 p-5 shadow-[0_14px_30px_rgba(80,122,149,0.08)]">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-50 text-slate-700">
+                  <div key={item.label} className="rounded-[1.6rem] bg-white/80 p-5 shadow-[0_14px_30px_rgba(80,122,149,0.08)] dark:bg-white/8 dark:shadow-[0_14px_30px_rgba(2,10,19,0.46)]">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-50 text-slate-700 dark:bg-white/12 dark:text-slate-200">
                       <item.icon className="h-5 w-5" />
                     </div>
                     <div className="mt-4 text-sm text-muted-foreground">{item.label}</div>

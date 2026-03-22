@@ -23,7 +23,7 @@ export function ChartTooltip({
   }
 
   return (
-    <div className="rounded-[1.25rem] border border-white/65 bg-white/92 p-4 shadow-[0_20px_40px_rgba(44,84,112,0.14)]">
+    <div className="rounded-[1.25rem] border border-white/65 bg-white/92 p-4 shadow-[0_20px_40px_rgba(44,84,112,0.14)] dark:border-white/12 dark:bg-slate-900/92 dark:shadow-[0_22px_48px_rgba(0,0,0,0.46)]">
       <div className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">{label}</div>
       <div className="space-y-2">
         {payload.map((entry) => (

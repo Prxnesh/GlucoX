@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, HeartPulse } from "lucide-react";
 
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -17,7 +18,7 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-40 px-4 py-4 md:px-8">
-      <div className="glass-panel mx-auto flex max-w-7xl items-center justify-between rounded-[2rem] border border-white/65 px-5 py-4 shadow-[var(--shadow-soft)]">
+      <div className="glass-panel mx-auto flex max-w-7xl items-center justify-between rounded-[2rem] border border-white/65 px-4 py-4 shadow-[var(--shadow-soft)] dark:border-white/10 md:px-5">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#0cc9a7_0%,#5ab0ff_100%)] text-white shadow-[0_16px_30px_rgba(10,175,149,0.28)]">
             <HeartPulse className="h-5 w-5" />
@@ -28,7 +29,7 @@ export function SiteHeader() {
           </div>
         </Link>
 
-        <nav className="hidden items-center gap-2 rounded-full bg-white/65 p-1 md:flex">
+        <nav className="hidden items-center gap-2 rounded-full bg-white/65 p-1 dark:bg-white/8 md:flex">
           {[
             { href: "/", label: "Product" },
             { href: "/dashboard", label: "Dashboard" },
@@ -38,7 +39,9 @@ export function SiteHeader() {
               href={item.href}
               className={cn(
                 "rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                pathname === item.href ? "bg-white text-foreground shadow-sm" : "text-muted-foreground"
+                pathname === item.href
+                  ? "bg-white text-foreground shadow-sm dark:bg-white/14"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {item.label}
@@ -47,6 +50,9 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
           {user ? (
             <>
               <div className="hidden text-right md:block">
@@ -73,6 +79,9 @@ export function SiteHeader() {
               </Button>
             </>
           )}
+          <div className="sm:hidden">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>

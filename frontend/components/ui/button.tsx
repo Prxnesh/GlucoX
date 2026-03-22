@@ -10,13 +10,13 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[linear-gradient(135deg,hsl(var(--primary))_0%,#54c4ff_100%)] text-primary-foreground shadow-[0_16px_34px_rgba(0,158,140,0.24)] hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(0,158,140,0.28)]",
+          "bg-[linear-gradient(135deg,hsl(var(--primary))_0%,#54c4ff_100%)] text-primary-foreground shadow-[0_16px_34px_rgba(0,158,140,0.24)] hover:-translate-y-0.5 hover:shadow-[0_22px_40px_rgba(0,158,140,0.28)] dark:shadow-[0_18px_38px_rgba(2,20,26,0.45)]",
         secondary:
-          "bg-white/80 text-foreground border border-white/60 shadow-[var(--shadow-card)] hover:bg-white",
+          "bg-white/80 text-foreground border border-white/60 shadow-[var(--shadow-card)] hover:bg-white dark:border-white/12 dark:bg-white/10 dark:hover:bg-white/14",
         ghost:
-          "text-muted-foreground hover:bg-white/60 hover:text-foreground",
+          "text-muted-foreground hover:bg-white/60 hover:text-foreground dark:hover:bg-white/10",
         danger:
-          "bg-[linear-gradient(135deg,#ff7d7d_0%,#ff9f6e_100%)] text-white shadow-[0_16px_34px_rgba(255,113,113,0.22)] hover:-translate-y-0.5"
+          "bg-[linear-gradient(135deg,#ff7d7d_0%,#ff9f6e_100%)] text-white shadow-[0_16px_34px_rgba(255,113,113,0.22)] hover:-translate-y-0.5 dark:shadow-[0_18px_36px_rgba(54,16,16,0.5)]"
       },
       size: {
         default: "h-11 px-5 py-2.5",

@@ -27,13 +27,13 @@ export function InsightsPanel({
         {insights.length ? (
           <div className="space-y-3">
             {insights.map((insight) => (
-              <div key={insight} className="rounded-[1.5rem] bg-white/70 px-4 py-4 text-sm leading-6 text-slate-700">
+              <div key={insight} className="rounded-[1.5rem] bg-white/70 px-4 py-4 text-sm leading-6 text-slate-700 dark:bg-white/8 dark:text-slate-200">
                 {insight}
               </div>
             ))}
           </div>
         ) : (
-          <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/70 px-4 py-10 text-center text-sm text-muted-foreground">
+          <div className="rounded-[1.5rem] border border-dashed border-slate-200 bg-slate-50/70 px-4 py-10 text-center text-sm text-muted-foreground dark:border-white/14 dark:bg-white/6">
             Generate a prediction or upload a report to receive contextual guidance.
           </div>
         )}

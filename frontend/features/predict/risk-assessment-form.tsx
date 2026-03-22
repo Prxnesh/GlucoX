@@ -98,15 +98,15 @@ export function RiskAssessmentForm({
             })}
           </div>
 
-          <label className="flex items-start gap-3 rounded-[1.5rem] border border-emerald-100 bg-emerald-50/70 p-4">
+          <label className="flex items-start gap-3 rounded-[1.5rem] border border-emerald-100 bg-emerald-50/70 p-4 dark:border-emerald-500/30 dark:bg-emerald-500/14">
             <input
               type="checkbox"
-              className="mt-1 h-4 w-4 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500"
+              className="mt-1 h-4 w-4 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 dark:border-emerald-400/60 dark:bg-emerald-500/12"
               {...form.register("family_history")}
             />
             <div>
               <div className="flex items-center gap-2 font-medium">
-                <HeartHandshake className="h-4 w-4 text-emerald-600" />
+                <HeartHandshake className="h-4 w-4 text-emerald-600 dark:text-emerald-300" />
                 Family history
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -115,7 +115,7 @@ export function RiskAssessmentForm({
             </div>
           </label>
 
-          {error ? <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</p> : null}
+          {error ? <p className="rounded-2xl bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:bg-rose-500/18 dark:text-rose-200">{error}</p> : null}
 
           <Button className="w-full" size="lg" disabled={isPending}>
             {isPending ? "Running model..." : "Predict diabetes risk"}
