@@ -1,6 +1,7 @@
 from app.schemas.prediction import PredictionResponse
 from app.schemas.record import DashboardResponse, HealthRecordResponse
 from app.schemas.report import ReportExtractionResponse
+from app.prisma_client.fields import Json
 from app.utils.database import db
 
 
@@ -22,24 +23,28 @@ async def create_health_record(
     insights: list[str],
     report_id: str | None = None,
 ):
+    record_data = {
+        "user": {"connect": {"id": user_id}},
+        "source": source,
+        "riskScore": risk_score,
+        "category": category,
+        "confidence": confidence,
+        "age": age,
+        "bmi": bmi,
+        "glucose": glucose,
+        "bloodPressure": blood_pressure,
+        "insulin": insulin,
+        "familyHistory": family_history,
+        "hba1c": hba1c,
+        "cholesterol": cholesterol,
+        "insights": Json(insights),
+    }
+
+    if report_id:
+        record_data["report"] = {"connect": {"id": report_id}}
+
     return await db.healthrecord.create(
-        data={
-            "userId": user_id,
-            "source": source,
-            "riskScore": risk_score,
-            "category": category,
-            "confidence": confidence,
-            "age": age,
-            "bmi": bmi,
-            "glucose": glucose,
-            "bloodPressure": blood_pressure,
-            "insulin": insulin,
-            "familyHistory": family_history,
-            "hba1c": hba1c,
-            "cholesterol": cholesterol,
-            "insights": insights,
-            "reportId": report_id,
-        }
+        data=record_data
     )
 
 

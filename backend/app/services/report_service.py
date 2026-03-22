@@ -1,6 +1,7 @@
 from fastapi import UploadFile
 
 from app.ocr.extractor import extract_metrics, extract_text_from_upload
+from app.prisma_client.fields import Json
 from app.schemas.auth import CurrentUser
 from app.schemas.report import ReportExtractionResponse
 from app.services.history_service import create_health_record
@@ -34,12 +35,12 @@ async def analyze_and_store_report(user: CurrentUser, file: UploadFile) -> Repor
 
     report = await db.reportextraction.create(
         data={
-            "userId": user.id,
+            "user": {"connect": {"id": user.id}},
             "rawText": raw_text,
             "glucose": glucose,
             "hba1c": hba1c,
             "cholesterol": cholesterol,
-            "insights": insights,
+            "insights": Json(insights),
         }
     )
 
