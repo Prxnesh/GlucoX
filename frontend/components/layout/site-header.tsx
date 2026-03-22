@@ -33,6 +33,7 @@ export function SiteHeader() {
           {[
             { href: "/", label: "Product" },
             { href: "/dashboard", label: "Dashboard" },
+            { href: "/advanced", label: "Advanced" },
           ].map((item) => (
             <Link
               key={item.href}
