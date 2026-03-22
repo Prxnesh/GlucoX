@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth-context";
 import type { DashboardSnapshot, HealthRecord } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { LifestyleProfileForm } from "@/features/advanced/lifestyle-profile-form";
 
 const initialSnapshot: DashboardSnapshot = {
   latest_prediction: null,
@@ -140,6 +141,10 @@ export function AdvancedView() {
       </section>
 
       {error ? <div className="mt-6 rounded-[1.5rem] bg-rose-50 px-5 py-4 text-sm text-rose-700 dark:bg-rose-500/18 dark:text-rose-200">{error}</div> : null}
+
+      <section className="mt-8">
+        <LifestyleProfileForm />
+      </section>
 
       {!snapshot.records.length ? (
         <section className="mt-8">

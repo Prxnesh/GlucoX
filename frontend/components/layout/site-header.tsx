@@ -56,13 +56,15 @@ export function SiteHeader() {
           </div>
           {user ? (
             <>
-              <div className="hidden text-right md:block">
+              <Link href="/profile" className="hidden text-right md:block">
                 <div className="text-sm font-semibold">{user.name}</div>
                 <div className="text-xs text-muted-foreground">{user.email}</div>
-              </div>
-              <Avatar>
-                <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
-              </Avatar>
+              </Link>
+              <Link href="/profile" aria-label="Open profile">
+                <Avatar>
+                  <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+              </Link>
               <Button variant="ghost" size="sm" onClick={logout}>
                 Sign out
               </Button>
