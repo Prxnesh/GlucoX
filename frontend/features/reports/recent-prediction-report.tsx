@@ -24,6 +24,7 @@ type ReportMetric = {
   value: number;
   min: number;
   max: number;
+  threshold: number;
 };
 
 type RecordSnapshot = {
@@ -36,14 +37,21 @@ type RecordSnapshot = {
   cholesterol: number | null;
 };
 
-const metricBlueprint: Array<{ key: MetricKey; label: string; unit: string; min: number; max: number }> = [
-  { key: "age", label: "Age", unit: " years", min: 10, max: 100 },
-  { key: "bmi", label: "BMI", unit: "", min: 10, max: 45 },
-  { key: "glucose", label: "Glucose", unit: " mg/dL", min: 70, max: 220 },
-  { key: "blood_pressure", label: "Blood pressure", unit: " mmHg", min: 70, max: 180 },
-  { key: "insulin", label: "Insulin", unit: " uIU/mL", min: 0, max: 250 },
-  { key: "hba1c", label: "HbA1c", unit: " %", min: 4, max: 12 },
-  { key: "cholesterol", label: "Cholesterol", unit: " mg/dL", min: 120, max: 320 },
+const metricBlueprint: Array<{
+  key: MetricKey;
+  label: string;
+  unit: string;
+  min: number;
+  max: number;
+  threshold: number;
+}> = [
+  { key: "age", label: "Age", unit: " years", min: 10, max: 100, threshold: 45 },
+  { key: "bmi", label: "BMI", unit: "", min: 10, max: 45, threshold: 25 },
+  { key: "glucose", label: "Glucose", unit: " mg/dL", min: 70, max: 220, threshold: 140 },
+  { key: "blood_pressure", label: "Blood pressure", unit: " mmHg", min: 70, max: 180, threshold: 90 },
+  { key: "insulin", label: "Insulin", unit: " uIU/mL", min: 0, max: 250, threshold: 150 },
+  { key: "hba1c", label: "HbA1c", unit: " %", min: 4, max: 12, threshold: 5 },
+  { key: "cholesterol", label: "Cholesterol", unit: " mg/dL", min: 120, max: 320, threshold: 200 },
 ];
 
 function getCategoryStyles(category: PredictionResult["category"]) {
@@ -121,6 +129,7 @@ function buildMetrics(snapshot: RecordSnapshot) {
         unit: metric.unit,
         min: metric.min,
         max: metric.max,
+        threshold: metric.threshold,
         value,
       } satisfies ReportMetric;
     })
@@ -167,11 +176,14 @@ function buildMetricBars(metrics: ReportMetric[]) {
   const rows = metrics
     .map((metric, index) => {
       const normalized = toPercent(metric.value, metric.min, metric.max);
+      const isRisky = metric.value >= metric.threshold;
+      const barColor = isRisky ? "#dc2626" : "#0891b2";
+      const valueColor = isRisky ? "#991b1b" : "#0f172a";
       return `<g transform="translate(0, ${index * 54})">
         <text x="0" y="16" fill="#334155" font-size="13" font-weight="600">${escapeHtml(metric.label)}</text>
         <rect x="0" y="24" width="500" height="12" rx="6" fill="#e2e8f0" />
-        <rect x="0" y="24" width="${normalized * 5}" height="12" rx="6" fill="#0891b2" />
-        <text x="510" y="34" text-anchor="end" fill="#0f172a" font-size="12">${escapeHtml(formatValue(metric.value, metric.unit))}</text>
+        <rect x="0" y="24" width="${normalized * 5}" height="12" rx="6" fill="${barColor}" />
+        <text x="510" y="34" text-anchor="end" fill="${valueColor}" font-size="12" font-weight="${isRisky ? "700" : "500"}">${escapeHtml(formatValue(metric.value, metric.unit))}</text>
       </g>`;
     })
     .join("");
@@ -237,10 +249,12 @@ function buildReportDocument({
   const category = getCategoryStyles(prediction.category);
   const metrics = buildMetrics(snapshot);
   const metricsRows = metrics
-    .map(
-      (metric) =>
-        `<tr><td>${escapeHtml(metric.label)}</td><td>${escapeHtml(formatValue(metric.value, metric.unit))}</td></tr>`,
-    )
+    .map((metric) => {
+      const isRisky = metric.value >= metric.threshold;
+      return `<tr class="${isRisky ? "risk-row" : ""}"><td>${escapeHtml(metric.label)}</td><td>${escapeHtml(
+        formatValue(metric.value, metric.unit),
+      )}</td><td>${escapeHtml(`>= ${metric.threshold}${metric.unit}`)}</td><td>${isRisky ? "High" : "OK"}</td></tr>`;
+    })
     .join("");
 
   const insights = prediction.insights.length
@@ -389,17 +403,54 @@ function buildReportDocument({
         border-radius: 14px;
         overflow: hidden;
       }
+      th,
       td {
         border-bottom: 1px solid var(--line);
         padding: 12px;
         font-size: 14px;
       }
-      td:first-child {
+      th {
+        background: #f1f5f9;
+        text-align: left;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #334155;
+      }
+      td:first-child,
+      th:first-child {
         color: var(--muted);
-        width: 40%;
+        width: 32%;
       }
       tr:last-child td {
         border-bottom: none;
+      }
+      .risk-row td {
+        color: #991b1b;
+        font-weight: 700;
+        background: #fff1f2;
+      }
+      .compact-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .meta-kv {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        background: #f8fafc;
+      }
+      .meta-kv .k {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+      }
+      .meta-kv .v {
+        margin-top: 6px;
+        font-size: 14px;
+        font-weight: 700;
       }
       ul {
         margin: 0;
@@ -465,6 +516,17 @@ function buildReportDocument({
           </article>
         </section>
 
+        <section class="compact-grid">
+          <div class="meta-kv">
+            <div class="k">Patient Name</div>
+            <div class="v">${escapeHtml(patientName)}</div>
+          </div>
+          <div class="meta-kv">
+            <div class="k">Generated At</div>
+            <div class="v">${escapeHtml(when)}</div>
+          </div>
+        </section>
+
         <div class="two-col">
           <section class="panel">
             <h2>Risk gauge</h2>
@@ -482,7 +544,11 @@ function buildReportDocument({
         </div>
 
         <h2>Clinical inputs used in this report</h2>
-        ${metricsRows ? `<table><tbody>${metricsRows}</tbody></table>` : `<p class="muted">No clinical inputs were available at export time.</p>`}
+        ${
+          metricsRows
+            ? `<table><thead><tr><th>Parameter</th><th>Value</th><th>Risk threshold</th><th>Status</th></tr></thead><tbody>${metricsRows}</tbody></table>`
+            : `<p class="muted">No clinical inputs were available at export time.</p>`
+        }
 
         ${
           hasNotes
