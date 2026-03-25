@@ -41,6 +41,7 @@ export type ReportExtraction = {
 export type HealthRecord = {
   id: string;
   recorded_at: string;
+  source: "prediction" | "report";
   risk_score: number;
   category: "low" | "medium" | "high";
   glucose: number | null;

@@ -41,6 +41,187 @@ HealthSense/
 └── docker-compose.yml
 ```
 
+## Architecture Diagram Guide
+
+Use this section to draw a complete system architecture for the project.
+
+### 1) Layers and components to include
+
+- Client layer (frontend, Next.js)
+  - Auth UI
+  - Risk Predictor UI
+  - Report Upload UI
+  - Dashboard, History, and Insights UI
+- API layer (backend, FastAPI)
+  - `/api/auth/signup`
+  - `/api/auth/login`
+  - `/api/predict`
+  - `/api/reports/analyze`
+  - `/api/records/dashboard`
+- Service layer (backend services)
+  - Auth Service (JWT issue/verify)
+  - Prediction Service (validation + inference + persistence)
+  - Report Service (OCR parse + extraction + persistence)
+  - History Service (dashboard aggregation)
+- ML/OCR layer
+  - ML inference pipeline and trained artifact loading
+  - OCR extractor with `pytesseract` + `pypdf`
+- Data layer
+  - Prisma Client Python
+  - PostgreSQL
+  - Entities: `User`, `HealthRecord`, `ReportExtraction`
+- Runtime/infrastructure
+  - Frontend on `3001`
+  - Backend on `8010`
+  - PostgreSQL on `5432`
+
+### 2) Key data flows to draw
+
+1. Authentication flow
+   - Frontend sends credentials to auth endpoint
+   - Backend validates and returns JWT
+   - Frontend sends bearer token for protected routes
+2. Prediction flow
+   - Frontend posts vitals to `/api/predict`
+   - Backend runs ML inference and creates prediction insights
+   - Backend stores `HealthRecord` and returns response
+3. OCR report flow
+   - Frontend uploads file to `/api/reports/analyze`
+   - Backend extracts text/biomarkers with OCR parsing
+   - Backend stores `ReportExtraction` and linked `HealthRecord`
+4. Dashboard flow
+   - Frontend requests `/api/records/dashboard`
+   - Backend aggregates latest prediction + timeline + reports
+
+### 3) Container diagram (Mermaid)
+
+```mermaid
+flowchart LR
+  U[User]
+
+  subgraph FE[Frontend - Next.js]
+    A[Auth UI]
+    P[Risk Predictor UI]
+    R[Report Upload UI]
+    D[Dashboard UI]
+  end
+
+  subgraph BE[Backend - FastAPI]
+    AR[Auth Routes]
+    PR[Prediction Routes]
+    RR[Report Routes]
+    DR[Dashboard Routes]
+
+    AS[Auth Service]
+    PS[Prediction Service]
+    RS[Report Service]
+    HS[History Service]
+
+    ML[ML Inference Engine]
+    OCR[OCR Extractor]
+    ORM[Prisma Client Python]
+  end
+
+  subgraph DB[Data Layer]
+    PG[(PostgreSQL)]
+  end
+
+  U --> FE
+  A --> AR --> AS
+  P --> PR --> PS --> ML
+  R --> RR --> RS --> OCR
+  D --> DR --> HS
+
+  AS --> ORM
+  PS --> ORM
+  RS --> ORM
+  HS --> ORM
+  ORM --> PG
+```
+
+### 4) Sequence diagram: prediction
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant UI as Frontend (Risk Predictor)
+  participant API as FastAPI (/api/predict)
+  participant SVC as Prediction Service
+  participant ML as ML Pipeline
+  participant DB as PostgreSQL (via Prisma)
+
+  UI->>API: POST /api/predict (vitals + bearer token)
+  API->>SVC: validate input and authorize user
+  SVC->>ML: run inference (risk, category, confidence)
+  ML-->>SVC: prediction output
+  SVC->>DB: insert HealthRecord
+  DB-->>SVC: record id + timestamp
+  SVC-->>API: PredictionResponse
+  API-->>UI: risk score + confidence + insights
+```
+
+### 5) Sequence diagram: OCR report analysis
+
+```mermaid
+sequenceDiagram
+  autonumber
+  participant UI as Frontend (Report Upload)
+  participant API as FastAPI (/api/reports/analyze)
+  participant SVC as Report Service
+  participant OCR as OCR Extractor
+  participant DB as PostgreSQL (via Prisma)
+
+  UI->>API: POST /api/reports/analyze (file + bearer token)
+  API->>SVC: validate file and authorize user
+  SVC->>OCR: parse PDF/image and extract text/metrics
+  OCR-->>SVC: glucose, HbA1c, cholesterol, raw text
+  SVC->>DB: insert ReportExtraction
+  SVC->>DB: insert linked HealthRecord
+  DB-->>SVC: saved entities
+  SVC-->>API: ReportExtractionResponse
+  API-->>UI: extracted values + insights
+```
+
+### 6) ER diagram (Mermaid)
+
+```mermaid
+erDiagram
+  USER ||--o{ HEALTH_RECORD : has
+  USER ||--o{ REPORT_EXTRACTION : has
+  REPORT_EXTRACTION o|--|| HEALTH_RECORD : linked_to
+
+  USER {
+    string id PK
+    string name
+    string email
+    string passwordHash
+    datetime createdAt
+  }
+
+  HEALTH_RECORD {
+    string id PK
+    string userId FK
+    string source
+    float riskScore
+    string category
+    float confidence
+    float glucose
+    float hba1c
+    float cholesterol
+    datetime recordedAt
+  }
+
+  REPORT_EXTRACTION {
+    string id PK
+    string userId FK
+    float glucose
+    float hba1c
+    float cholesterol
+    string rawText
+    datetime createdAt
+  }
+```
+
 ## Quick Start
 
 ### Prerequisites

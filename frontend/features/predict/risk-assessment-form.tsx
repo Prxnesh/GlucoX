@@ -30,6 +30,42 @@ const fieldConfig = [
   { name: "insulin", label: "Insulin", placeholder: "94", icon: Ruler },
 ] as const;
 
+const quickSamples = [
+  {
+    label: "Sample A - low",
+    values: {
+      age: 27,
+      bmi: 22.3,
+      glucose: 96,
+      blood_pressure: 74,
+      insulin: 72,
+      family_history: false,
+    },
+  },
+  {
+    label: "Sample B - medium",
+    values: {
+      age: 42,
+      bmi: 29.4,
+      glucose: 148,
+      blood_pressure: 88,
+      insulin: 130,
+      family_history: true,
+    },
+  },
+  {
+    label: "Sample C - high",
+    values: {
+      age: 55,
+      bmi: 34.8,
+      glucose: 212,
+      blood_pressure: 102,
+      insulin: 218,
+      family_history: true,
+    },
+  },
+] as const;
+
 export function RiskAssessmentForm({
   onCreated,
 }: {
@@ -78,6 +114,26 @@ export function RiskAssessmentForm({
       </CardHeader>
       <CardContent>
         <form className="space-y-5" onSubmit={onSubmit}>
+          <div className="rounded-[1.25rem] border border-sky-100 bg-sky-50/70 p-4 dark:border-sky-500/30 dark:bg-sky-500/10">
+            <p className="text-sm font-medium text-sky-800 dark:text-sky-200">Quick test samples</p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {quickSamples.map((sample) => (
+                <Button
+                  key={sample.label}
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => {
+                    form.reset(sample.values);
+                    setError(null);
+                  }}
+                >
+                  {sample.label}
+                </Button>
+              ))}
+            </div>
+          </div>
+
           <div className="grid gap-4 md:grid-cols-2">
             {fieldConfig.map((field) => {
               const Icon = field.icon;

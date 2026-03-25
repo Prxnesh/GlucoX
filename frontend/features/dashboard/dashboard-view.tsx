@@ -15,6 +15,7 @@ import { RiskHistoryChart } from "@/features/dashboard/risk-history-chart";
 import { HistoryTimeline } from "@/features/history/history-timeline";
 import { RiskAssessmentForm } from "@/features/predict/risk-assessment-form";
 import { ReportUploader } from "@/features/reports/report-uploader";
+import { RecentPredictionReport } from "@/features/reports/recent-prediction-report";
 
 const initialSnapshot: DashboardSnapshot = {
   latest_prediction: null,
@@ -78,6 +79,7 @@ export function DashboardView() {
 
   const latestRecord = snapshot.records[0];
   const latestReport = snapshot.reports[0];
+  const latestPredictionRecord = snapshot.records.find((record) => record.source === "prediction") ?? null;
 
   return (
     <div className="mx-auto max-w-7xl px-4 md:px-8">
@@ -104,6 +106,14 @@ export function DashboardView() {
       <section className="mt-8 grid gap-6 xl:grid-cols-[1.3fr,0.9fr]">
         <RiskAssessmentForm onCreated={handlePredictionCreated} />
         <ReportUploader onCreated={handleReportCreated} />
+      </section>
+
+      <section className="mt-8">
+        <RecentPredictionReport
+          user={user}
+          latestPrediction={snapshot.latest_prediction}
+          latestPredictionRecord={latestPredictionRecord}
+        />
       </section>
 
       {snapshot.records.length ? (

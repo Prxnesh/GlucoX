@@ -53,7 +53,14 @@ async def get_current_user(
             detail="Authentication is required.",
         )
 
-    subject = decode_access_token(credentials.credentials)
+    try:
+        subject = decode_access_token(credentials.credentials)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(exc),
+        ) from exc
+
     user = await db.user.find_unique(where={"id": subject})
     if not user:
         raise HTTPException(
