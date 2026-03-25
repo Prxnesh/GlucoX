@@ -1,19 +1,24 @@
 # GlucoX
 
-GlucoX is a production-oriented diabetes risk prediction and health insights platform built with a clean frontend/backend split:
+GlucoX is a full-stack diabetes risk intelligence platform that combines machine learning predictions, OCR-based lab report parsing, and a modern health dashboard.
 
-- `frontend`: Next.js App Router, TypeScript, Tailwind CSS, Recharts, Framer Motion
-- `backend`: FastAPI, modular REST routes, Prisma-backed PostgreSQL, OCR services, and scikit-learn ML
+## Features
 
-The product flow covers:
-
-- JWT auth with persistent frontend sessions
-- Diabetes risk prediction from structured health inputs
+- Authentication with JWT-based session handling
+- Diabetes risk prediction from structured clinical inputs
 - OCR extraction of glucose, HbA1c, and cholesterol from reports
-- Health dashboards with custom charts and timeline history
-- Human-readable insights generated from rule-based health logic
+- Advanced lifestyle assessment and profile view
+- Timeline, charts, and actionable health insights
+- Responsive UI with light and dark themes
 
-## Project Structure
+## Tech Stack
+
+- Frontend: Next.js 15, React 19, TypeScript, Tailwind CSS, Recharts, Framer Motion
+- Backend: FastAPI, Prisma Client Python, PostgreSQL
+- ML: scikit-learn (Logistic Regression baseline)
+- OCR: pytesseract + pypdf (with poppler support for scanned PDFs)
+
+## Repository Structure
 
 ```text
 HealthSense/
@@ -36,98 +41,125 @@ HealthSense/
 └── docker-compose.yml
 ```
 
-## Local Setup
+## Quick Start
 
-### 1. Start PostgreSQL
+### Prerequisites
+
+- Python 3.13 recommended
+- Node.js 20+
+- PostgreSQL 15+
+- Prisma CLI
+- (Optional but recommended) tesseract and poppler for OCR
+
+### 1) Start PostgreSQL
+
+Use Docker:
+
+```bash
+docker compose up -d
+```
+
+If your machine uses the legacy command, use:
 
 ```bash
 docker-compose up -d
 ```
 
-### 2. Configure the backend
+### 2) Backend setup
 
 ```bash
 cd backend
 cp .env.example .env
 ```
 
-Recommended local `.env` values:
+Suggested local values in backend/.env:
 
 ```env
 DATABASE_URL=postgresql://diasense:diasense@localhost:5432/diasense
 JWT_SECRET=replace-this-with-a-long-secret
 JWT_ALGORITHM=HS256
 JWT_EXPIRES_MINUTES=1440
-CORS_ORIGINS=http://localhost:3000
+CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001
 MODEL_PATH=app/ml/artifacts/diabetes_model.pkl
 TESSERACT_CMD=/opt/homebrew/bin/tesseract
 ```
 
-Install dependencies, generate Prisma client, sync the schema, and train the model:
+Install dependencies, generate Prisma client, push schema, and train model:
 
 ```bash
 pip3 install -e .
 prisma generate --schema=prisma/schema.prisma
 prisma db push --schema=prisma/schema.prisma
 python3 scripts/train_model.py
-uvicorn app.main:app --reload
 ```
 
-### 3. Configure the frontend
+Run API:
+
+```bash
+uvicorn app.main:app --host 127.0.0.1 --port 8010 --reload
+```
+
+### 3) Frontend setup
 
 ```bash
 cd ../frontend
-cp .env.example .env.local
 npm install
-npm run dev
 ```
 
-Frontend environment:
+Create frontend/.env.local:
 
 ```env
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8010/api
 ```
+
+Run frontend:
+
+```bash
+npm run dev -- --port 3001
+```
+
+Open app:
+
+- Frontend: http://127.0.0.1:3001
+- Backend docs: http://127.0.0.1:8010/docs
 
 ## OCR Requirements
 
-For image OCR and scanned PDF support, install:
-
-- `tesseract`
-- `poppler`
-
-On macOS with Homebrew:
+For scanned images/PDF OCR support, install:
 
 ```bash
 brew install tesseract poppler
 ```
 
-Text-based PDFs will still parse directly through `pypdf`.
+Text-based PDFs are still parsed directly using pypdf.
 
 ## ML Pipeline
 
-The training script uses the real PIMA Indians Diabetes dataset, stored locally at:
+- Dataset: backend/app/ml/data/pima-indians-diabetes.csv
+- Baseline model: Logistic Regression
+- Pipeline: median imputation + feature scaling + classifier
+- Artifact output: backend/app/ml/artifacts/diabetes_model.pkl
 
-- `backend/app/ml/data/pima-indians-diabetes.csv`
-
-The current baseline model:
-
-- Uses `LogisticRegression`
-- Applies median imputation and feature scaling
-- Tracks `accuracy`, `precision`, and `recall`
-- Saves the serialized model bundle to `backend/app/ml/artifacts/diabetes_model.pkl`
-
-You can upgrade later with:
+Optional model training variant:
 
 ```bash
 python3 scripts/train_model.py --model-kind xgboost
 ```
 
-## Sample API Calls
+## Core API Endpoints
 
-### Signup
+- POST /api/auth/signup
+- POST /api/auth/login
+- POST /api/predict
+- POST /api/reports/analyze
+- GET /api/records/dashboard
+
+## Example API Calls
+
+Signup:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/auth/signup \
+curl -X POST http://127.0.0.1:8010/api/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Aarav Shah",
@@ -136,21 +168,10 @@ curl -X POST http://127.0.0.1:8000/api/auth/signup \
   }'
 ```
 
-### Login
+Predict risk:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "aarav@example.com",
-    "password": "StrongPass123"
-  }'
-```
-
-### Predict Risk
-
-```bash
-curl -X POST http://127.0.0.1:8000/api/predict \
+curl -X POST http://127.0.0.1:8010/api/predict \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT" \
   -d '{
@@ -163,32 +184,31 @@ curl -X POST http://127.0.0.1:8000/api/predict \
   }'
 ```
 
-### Analyze Report
+## Development Scripts
+
+Frontend:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/reports/analyze \
-  -H "Authorization: Bearer YOUR_JWT" \
-  -F "file=@/absolute/path/to/report.pdf"
+npm run dev
+npm run typecheck
+npm run lint
+npm run build
 ```
 
-### Fetch Dashboard
+Backend:
 
 ```bash
-curl http://127.0.0.1:8000/api/records/dashboard \
-  -H "Authorization: Bearer YOUR_JWT"
+python3 scripts/train_model.py
+prisma generate --schema=prisma/schema.prisma
+prisma db push --schema=prisma/schema.prisma
+uvicorn app.main:app --reload
 ```
 
-## Verification
+## Notes
 
-Validated locally during setup:
+- If ports 3001 or 8010 are in use, switch to free ports and update frontend/.env.local accordingly.
+- Current advanced assessment/profile persistence is browser-local (localStorage) on the frontend.
 
-- `frontend`: `npm run lint`
-- `frontend`: `npm run typecheck`
-- `frontend`: `npm run build`
-- `backend`: `python3 -m compileall app`
-- `backend`: `pip3 install -e .`
-- `backend`: `prisma generate --schema=prisma/schema.prisma`
-- `backend`: `python3 scripts/train_model.py`
+## License
 
-The OCR extraction regex was also smoke-tested against a sample report string.
-# HealthSense
+Add your preferred license information here (for example: MIT).
