@@ -1,6 +1,8 @@
 import type {
   AuthResponse,
   DashboardSnapshot,
+  HealthAssistantMessage,
+  HealthAssistantResponse,
   PredictionPayload,
   PredictionResult,
   ReportExtraction,
@@ -81,3 +83,16 @@ export async function fetchDashboard(token: string) {
   });
 }
 
+export async function askHealthAssistant(
+  token: string,
+  payload: {
+    messages: HealthAssistantMessage[];
+    lifestyle_profile: Record<string, string>;
+  }
+) {
+  return request<HealthAssistantResponse>("/chat", {
+    method: "POST",
+    token,
+    body: JSON.stringify(payload),
+  });
+}

@@ -15,6 +15,12 @@ export function SiteHeader() {
   const { user, logout } = useAuth();
 
   const isDashboard = pathname.startsWith("/dashboard");
+  const navItems = [
+    { href: "/", label: "Product" },
+    { href: "/dashboard", label: "Dashboard" },
+    { href: "/assistant", label: "Assistant" },
+    { href: "/advanced", label: "Advanced" },
+  ];
 
   return (
     <header className="sticky top-0 z-40 px-4 py-4 md:px-8">
@@ -30,17 +36,13 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-2 rounded-full bg-white/65 p-1 dark:bg-white/8 md:flex">
-          {[
-            { href: "/", label: "Product" },
-            { href: "/dashboard", label: "Dashboard" },
-            { href: "/advanced", label: "Advanced" },
-          ].map((item) => (
+          {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               className={cn(
                 "rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                pathname === item.href
+                pathname === item.href || (item.href !== "/" && pathname.startsWith(`${item.href}/`))
                   ? "bg-white text-foreground shadow-sm dark:bg-white/14"
                   : "text-muted-foreground hover:text-foreground"
               )}

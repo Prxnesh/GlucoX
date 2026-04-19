@@ -23,8 +23,10 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-const TOKEN_KEY = "diasense.token";
-const USER_KEY = "diasense.user";
+const TOKEN_KEY = "glucox.token";
+const USER_KEY = "glucox.user";
+const LEGACY_TOKEN_KEY = "diasense.token";
+const LEGACY_USER_KEY = "diasense.user";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -32,12 +34,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const storedToken = window.localStorage.getItem(TOKEN_KEY);
-    const storedUser = window.localStorage.getItem(USER_KEY);
+    const storedToken =
+      window.localStorage.getItem(TOKEN_KEY) ??
+      window.localStorage.getItem(LEGACY_TOKEN_KEY);
+    const storedUser =
+      window.localStorage.getItem(USER_KEY) ??
+      window.localStorage.getItem(LEGACY_USER_KEY);
 
     if (storedToken && storedUser) {
       setToken(storedToken);
       setUser(JSON.parse(storedUser) as User);
+      window.localStorage.setItem(TOKEN_KEY, storedToken);
+      window.localStorage.setItem(USER_KEY, storedUser);
+      window.localStorage.removeItem(LEGACY_TOKEN_KEY);
+      window.localStorage.removeItem(LEGACY_USER_KEY);
     }
 
     setReady(true);
@@ -96,4 +106,3 @@ export function useAuth() {
 
   return context;
 }
-

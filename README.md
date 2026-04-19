@@ -8,6 +8,7 @@ GlucoX is a full-stack diabetes risk intelligence platform that combines machine
 - Diabetes risk prediction from structured clinical inputs
 - OCR extraction of glucose, HbA1c, and cholesterol from reports
 - Advanced lifestyle assessment and profile view
+- Personalized AI health chat backed by a local Ollama model
 - Timeline, charts, and actionable health insights
 - Responsive UI with light and dark themes
 
@@ -17,11 +18,12 @@ GlucoX is a full-stack diabetes risk intelligence platform that combines machine
 - Backend: FastAPI, Prisma Client Python, PostgreSQL
 - ML: scikit-learn (Logistic Regression baseline)
 - OCR: pytesseract + pypdf (with poppler support for scanned PDFs)
+- Local AI: Ollama chat API
 
 ## Repository Structure
 
 ```text
-HealthSense/
+GlucoX/
 ├── frontend/
 │   ├── app/
 │   ├── components/
@@ -55,11 +57,13 @@ Use this section to draw a complete system architecture for the project.
 - API layer (backend, FastAPI)
   - `/api/auth/signup`
   - `/api/auth/login`
+  - `/api/chat`
   - `/api/predict`
   - `/api/reports/analyze`
   - `/api/records/dashboard`
 - Service layer (backend services)
   - Auth Service (JWT issue/verify)
+  - Chat Service (personalized context + Ollama)
   - Prediction Service (validation + inference + persistence)
   - Report Service (OCR parse + extraction + persistence)
   - History Service (dashboard aggregation)
@@ -71,8 +75,8 @@ Use this section to draw a complete system architecture for the project.
   - PostgreSQL
   - Entities: `User`, `HealthRecord`, `ReportExtraction`
 - Runtime/infrastructure
-  - Frontend on `3001`
-  - Backend on `8010`
+  - Frontend on `3000`
+  - Backend on `8000`
   - PostgreSQL on `5432`
 
 ### 2) Key data flows to draw
@@ -92,6 +96,10 @@ Use this section to draw a complete system architecture for the project.
 4. Dashboard flow
    - Frontend requests `/api/records/dashboard`
    - Backend aggregates latest prediction + timeline + reports
+5. AI assistant flow
+   - Frontend sends chat history and local lifestyle-profile facts to `/api/chat`
+   - Backend enriches the prompt with saved predictions and reports
+   - Ollama generates a personalized reply from that health context
 
 ### 3) Container diagram (Mermaid)
 
@@ -108,16 +116,19 @@ flowchart LR
 
   subgraph BE[Backend - FastAPI]
     AR[Auth Routes]
+    CR[Chat Routes]
     PR[Prediction Routes]
     RR[Report Routes]
     DR[Dashboard Routes]
 
     AS[Auth Service]
+    CS[Chat Service]
     PS[Prediction Service]
     RS[Report Service]
     HS[History Service]
 
     ML[ML Inference Engine]
+    LLM[Ollama Local Model]
     OCR[OCR Extractor]
     ORM[Prisma Client Python]
   end
@@ -128,11 +139,13 @@ flowchart LR
 
   U --> FE
   A --> AR --> AS
+  D --> CR --> CS --> LLM
   P --> PR --> PS --> ML
   R --> RR --> RS --> OCR
   D --> DR --> HS
 
   AS --> ORM
+  CS --> ORM
   PS --> ORM
   RS --> ORM
   HS --> ORM
@@ -229,6 +242,7 @@ erDiagram
 - Python 3.13 recommended
 - Node.js 20+
 - PostgreSQL 15+
+- Ollama installed locally with a pulled chat model
 - Prisma CLI
 - (Optional but recommended) tesseract and poppler for OCR
 
@@ -263,6 +277,10 @@ JWT_EXPIRES_MINUTES=1440
 CORS_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001
 MODEL_PATH=app/ml/artifacts/diabetes_model.pkl
 TESSERACT_CMD=/opt/homebrew/bin/tesseract
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+OLLAMA_MODEL=llama3.2:latest
+OLLAMA_TIMEOUT_SECONDS=90
+OLLAMA_TEMPERATURE=0.3
 ```
 
 Install dependencies, generate Prisma client, push schema, and train model:
@@ -277,7 +295,14 @@ python3 scripts/train_model.py
 Run API:
 
 ```bash
-uvicorn app.main:app --host 127.0.0.1 --port 8010 --reload
+uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+Start Ollama in another terminal and pull a local model once:
+
+```bash
+ollama pull llama3.2
+ollama serve
 ```
 
 ### 3) Frontend setup
@@ -290,19 +315,20 @@ npm install
 Create frontend/.env.local:
 
 ```env
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8010/api
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000/api
 ```
 
 Run frontend:
 
 ```bash
-npm run dev -- --port 3001
+npm run dev
 ```
 
 Open app:
 
-- Frontend: http://127.0.0.1:3001
-- Backend docs: http://127.0.0.1:8010/docs
+- Frontend: http://127.0.0.1:3000
+- Backend docs: http://127.0.0.1:8000/docs
+- Ollama: http://127.0.0.1:11434
 
 ## OCR Requirements
 
@@ -332,6 +358,7 @@ python3 scripts/train_model.py --model-kind xgboost
 - POST /api/auth/signup
 - POST /api/auth/login
 - POST /api/predict
+- POST /api/chat
 - POST /api/reports/analyze
 - GET /api/records/dashboard
 
@@ -340,7 +367,7 @@ python3 scripts/train_model.py --model-kind xgboost
 Signup:
 
 ```bash
-curl -X POST http://127.0.0.1:8010/api/auth/signup \
+curl -X POST http://127.0.0.1:8000/api/auth/signup \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Aarav Shah",
@@ -352,7 +379,7 @@ curl -X POST http://127.0.0.1:8010/api/auth/signup \
 Predict risk:
 
 ```bash
-curl -X POST http://127.0.0.1:8010/api/predict \
+curl -X POST http://127.0.0.1:8000/api/predict \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_JWT" \
   -d '{
@@ -389,6 +416,7 @@ uvicorn app.main:app --reload
 
 - If ports 3001 or 8010 are in use, switch to free ports and update frontend/.env.local accordingly.
 - Current advanced assessment/profile persistence is browser-local (localStorage) on the frontend.
+- The AI assistant is personalized with server-side health history plus the locally saved advanced profile on the active device.
 
 ## License
 

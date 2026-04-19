@@ -6,104 +6,14 @@ import { CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  createEmptyLifestyleProfile,
+  loadLifestyleProfile,
+  saveLifestyleProfile,
+  type LifestyleProfile,
+} from "@/features/advanced/profile-storage";
 
-export type LifestyleProfile = {
-  physical_activity_level: string;
-  exercise_frequency: string;
-  average_daily_step_count: string;
-  type_of_activity: string;
-
-  overall_diet_quality: string;
-  sugar_intake: string;
-  junk_processed_food_frequency: string;
-  daily_water_intake: string;
-  fruit_vegetable_intake: string;
-  sugary_drinks_per_week: string;
-
-  average_sleep_duration: string;
-  sleep_quality: string;
-  sleep_consistency: string;
-
-  stress_level: string;
-  work_study_pressure: string;
-  screen_time_per_day: string;
-
-  smoking: string;
-  alcohol_consumption: string;
-
-  family_history_of_diabetes: string;
-  previous_diagnosis_of_diabetes: string;
-  history_of_prediabetes: string;
-  hypertension: string;
-  obesity: string;
-  pcos: string;
-  current_medications: string;
-
-  resting_heart_rate: string;
-  waist_circumference: string;
-  cholesterol_level: string;
-  triglycerides: string;
-
-  frequent_thirst: string;
-  frequent_urination: string;
-  fatigue_level: string;
-  unexplained_weight_changes: string;
-  blurred_vision: string;
-
-  meal_timing_consistency: string;
-  late_night_eating: string;
-  daily_sedentary_hours: string;
-};
-
-export const STORAGE_KEY = "diasense.advanced.lifestyle-profile";
-
-const initialValues: LifestyleProfile = {
-  physical_activity_level: "",
-  exercise_frequency: "",
-  average_daily_step_count: "",
-  type_of_activity: "",
-
-  overall_diet_quality: "",
-  sugar_intake: "",
-  junk_processed_food_frequency: "",
-  daily_water_intake: "",
-  fruit_vegetable_intake: "",
-  sugary_drinks_per_week: "",
-
-  average_sleep_duration: "",
-  sleep_quality: "",
-  sleep_consistency: "",
-
-  stress_level: "",
-  work_study_pressure: "",
-  screen_time_per_day: "",
-
-  smoking: "",
-  alcohol_consumption: "",
-
-  family_history_of_diabetes: "",
-  previous_diagnosis_of_diabetes: "",
-  history_of_prediabetes: "",
-  hypertension: "",
-  obesity: "",
-  pcos: "",
-  current_medications: "",
-
-  resting_heart_rate: "",
-  waist_circumference: "",
-  cholesterol_level: "",
-  triglycerides: "",
-
-  frequent_thirst: "",
-  frequent_urination: "",
-  fatigue_level: "",
-  unexplained_weight_changes: "",
-  blurred_vision: "",
-
-  meal_timing_consistency: "",
-  late_night_eating: "",
-  daily_sedentary_hours: "",
-};
+const initialValues = createEmptyLifestyleProfile();
 
 const selectClassName =
   "flex h-12 w-full rounded-2xl border border-white/70 bg-white/78 px-4 py-3 text-sm shadow-[0_12px_30px_rgba(117,145,167,0.08)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring dark:border-white/12 dark:bg-white/6 dark:shadow-[0_12px_30px_rgba(4,13,22,0.45)]";
@@ -113,14 +23,7 @@ export function LifestyleProfileForm() {
   const [savedAt, setSavedAt] = useState<string | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw) as LifestyleProfile;
-      setValues({ ...initialValues, ...parsed });
-    } catch {
-      // If stored data is malformed, keep defaults.
-    }
+    setValues(loadLifestyleProfile());
   }, []);
 
   const updateField = (field: keyof LifestyleProfile, value: string) => {
@@ -129,7 +32,7 @@ export function LifestyleProfileForm() {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(values));
+    saveLifestyleProfile(values);
     setSavedAt(new Date().toLocaleString());
   };
 

@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     cors_origins_raw: str = Field(default="http://localhost:3000", alias="CORS_ORIGINS")
     model_path: str = Field(default="app/ml/artifacts/diabetes_model.pkl", alias="MODEL_PATH")
     tesseract_cmd: str | None = Field(default=None, alias="TESSERACT_CMD")
+    ollama_base_url: str = Field(default="http://127.0.0.1:11434", alias="OLLAMA_BASE_URL")
+    ollama_model: str = Field(default="llama3.2:latest", alias="OLLAMA_MODEL")
+    ollama_timeout_seconds: float = Field(default=90.0, alias="OLLAMA_TIMEOUT_SECONDS")
+    ollama_temperature: float = Field(default=0.3, alias="OLLAMA_TEMPERATURE")
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -23,4 +27,3 @@ class Settings(BaseSettings):
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
     return Settings()
-

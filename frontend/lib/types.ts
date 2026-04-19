@@ -60,3 +60,15 @@ export type DashboardSnapshot = {
   reports: ReportExtraction[];
 };
 
+export type HealthAssistantRole = "user" | "assistant";
+
+export type HealthAssistantMessage = {
+  role: HealthAssistantRole;
+  content: string;
+};
+
+export type HealthAssistantResponse = {
+  message: HealthAssistantMessage;
+  context_summary: string[];
+  model: string;
+};

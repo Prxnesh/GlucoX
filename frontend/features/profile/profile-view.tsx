@@ -9,47 +9,15 @@ import { useAuth } from "@/lib/auth-context";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { STORAGE_KEY, type LifestyleProfile } from "@/features/advanced/lifestyle-profile-form";
+import {
+  countFilledLifestyleProfileFields,
+  createEmptyLifestyleProfile,
+  loadLifestyleProfile,
+  normalizeLifestyleValue,
+  type LifestyleProfile,
+} from "@/features/advanced/profile-storage";
 
-const emptyProfile: LifestyleProfile = {
-  physical_activity_level: "",
-  exercise_frequency: "",
-  average_daily_step_count: "",
-  type_of_activity: "",
-  overall_diet_quality: "",
-  sugar_intake: "",
-  junk_processed_food_frequency: "",
-  daily_water_intake: "",
-  fruit_vegetable_intake: "",
-  sugary_drinks_per_week: "",
-  average_sleep_duration: "",
-  sleep_quality: "",
-  sleep_consistency: "",
-  stress_level: "",
-  work_study_pressure: "",
-  screen_time_per_day: "",
-  smoking: "",
-  alcohol_consumption: "",
-  family_history_of_diabetes: "",
-  previous_diagnosis_of_diabetes: "",
-  history_of_prediabetes: "",
-  hypertension: "",
-  obesity: "",
-  pcos: "",
-  current_medications: "",
-  resting_heart_rate: "",
-  waist_circumference: "",
-  cholesterol_level: "",
-  triglycerides: "",
-  frequent_thirst: "",
-  frequent_urination: "",
-  fatigue_level: "",
-  unexplained_weight_changes: "",
-  blurred_vision: "",
-  meal_timing_consistency: "",
-  late_night_eating: "",
-  daily_sedentary_hours: "",
-};
+const emptyProfile = createEmptyLifestyleProfile();
 
 const sections: Array<{
   title: string;
@@ -139,11 +107,6 @@ const sections: Array<{
   },
 ];
 
-function normalize(value: string) {
-  if (!value) return "Not provided";
-  return value.replaceAll("_", " ");
-}
-
 export function ProfileView() {
   const router = useRouter();
   const { ready, token, user } = useAuth();
@@ -158,11 +121,7 @@ export function ProfileView() {
     }
 
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        const parsed = JSON.parse(raw) as Partial<LifestyleProfile>;
-        setProfile({ ...emptyProfile, ...parsed });
-      }
+      setProfile(loadLifestyleProfile());
     } catch {
       setProfile(emptyProfile);
     } finally {
@@ -171,7 +130,7 @@ export function ProfileView() {
   }, [ready, token, router]);
 
   const filledCount = useMemo(
-    () => Object.values(profile).filter((value) => value.trim().length > 0).length,
+    () => countFilledLifestyleProfileFields(profile),
     [profile]
   );
 
@@ -239,7 +198,7 @@ export function ProfileView() {
                   {section.fields.map((field) => (
                     <div key={field.key} className="rounded-[1.2rem] border border-white/65 bg-white/70 p-4 dark:border-white/12 dark:bg-white/6">
                       <div className="text-xs uppercase tracking-[0.14em] text-muted-foreground">{field.label}</div>
-                      <div className="mt-2 text-sm font-medium text-foreground">{normalize(profile[field.key])}</div>
+                      <div className="mt-2 text-sm font-medium text-foreground">{normalizeLifestyleValue(profile[field.key])}</div>
                     </div>
                   ))}
                 </div>
