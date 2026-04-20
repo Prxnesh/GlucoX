@@ -13,6 +13,7 @@ import { EmptyDashboard } from "@/features/dashboard/empty-dashboard";
 import { InsightsPanel } from "@/features/dashboard/insights-panel";
 import { MetricsComparisonChart } from "@/features/dashboard/metrics-comparison-chart";
 import { OverviewCards } from "@/features/dashboard/overview-cards";
+import { RiskDriversCard } from "@/features/dashboard/risk-drivers-card";
 import { RiskHistoryChart } from "@/features/dashboard/risk-history-chart";
 import { HistoryTimeline } from "@/features/history/history-timeline";
 import { RiskAssessmentForm } from "@/features/predict/risk-assessment-form";
@@ -174,7 +175,8 @@ export function DashboardView() {
             <MetricsComparisonChart latestRecord={latestRecord} />
           </section>
 
-          <section className="mt-8 grid gap-6 xl:grid-cols-[1fr,1.15fr]">
+          <section className="mt-8 grid gap-6 xl:grid-cols-[1fr,1fr,1.15fr]">
+            <RiskDriversCard prediction={snapshot.latest_prediction} />
             <InsightsPanel prediction={snapshot.latest_prediction} latestReport={latestReport} />
             <HistoryTimeline records={snapshot.records} />
           </section>

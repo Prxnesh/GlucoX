@@ -53,6 +53,13 @@ export function buildHealthSummary(user: User | null | undefined, snapshot: Dash
     latestPrediction.insights.slice(0, 3).forEach((insight) => lines.push(`- ${insight}`));
   }
 
+  if (latestPrediction?.drivers?.length) {
+    lines.push("Top risk drivers:");
+    latestPrediction.drivers.slice(0, 3).forEach((driver) => {
+      lines.push(`- ${driver.label}: ${driver.contribution > 0 ? "+" : ""}${driver.contribution.toFixed(1)} pts (${driver.detail})`);
+    });
+  }
+
   return lines.join("\n");
 }
 

@@ -24,8 +24,17 @@ export type PredictionResult = {
   category: "low" | "medium" | "high";
   confidence: number;
   insights: string[];
+  drivers?: PredictionDriver[];
   record_id?: string;
   created_at?: string;
+};
+
+export type PredictionDriver = {
+  feature: string;
+  label: string;
+  contribution: number;
+  direction: "up" | "down" | "neutral";
+  detail: string;
 };
 
 export type ReportExtraction = {

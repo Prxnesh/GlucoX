@@ -1,26 +1,11 @@
-from functools import lru_cache
-from pathlib import Path
-
-import joblib
 import pandas as pd
 
 from app.schemas.auth import CurrentUser
 from app.schemas.prediction import PredictionInput, PredictionResponse
+from app.services.explainability_service import build_prediction_drivers
 from app.services.history_service import create_health_record
 from app.services.insight_service import build_prediction_insights
-from app.utils.config import get_settings
-
-settings = get_settings()
-
-
-@lru_cache(maxsize=1)
-def load_model_bundle():
-    model_path = Path(settings.model_path)
-    if not model_path.is_absolute():
-        model_path = Path(__file__).resolve().parents[2] / model_path
-    if not model_path.exists():
-        raise FileNotFoundError(model_path)
-    return joblib.load(model_path)
+from app.services.model_service import load_model_bundle
 
 
 def categorize_risk(risk_score: float) -> str:
@@ -52,6 +37,18 @@ async def predict_and_store(user: CurrentUser, payload: PredictionInput) -> Pred
     category = categorize_risk(risk_score)
     confidence = round(max(probability, 1 - probability), 3)
     insights = build_prediction_insights(payload, risk_score, category)
+    drivers = build_prediction_drivers(
+        bundle,
+        {
+            "age": payload.age,
+            "bmi": payload.bmi,
+            "glucose": payload.glucose,
+            "blood_pressure": payload.blood_pressure,
+            "insulin": payload.insulin,
+            "family_history": payload.family_history,
+        },
+        probability,
+    )
 
     record = await create_health_record(
         user_id=user.id,
@@ -75,6 +72,7 @@ async def predict_and_store(user: CurrentUser, payload: PredictionInput) -> Pred
         category=category,
         confidence=confidence,
         insights=insights,
+        drivers=drivers,
         record_id=record.id,
         created_at=record.recordedAt,
     )

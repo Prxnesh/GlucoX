@@ -1,6 +1,8 @@
 from app.schemas.prediction import PredictionResponse
 from app.schemas.record import ClearHistoryResponse, DashboardResponse, HealthRecordResponse
 from app.schemas.report import ReportExtractionResponse
+from app.services.explainability_service import build_prediction_drivers
+from app.services.model_service import load_model_bundle
 from app.prisma_client.fields import Json
 from app.utils.database import db
 
@@ -60,6 +62,22 @@ async def build_dashboard_snapshot(user_id: str) -> DashboardResponse:
     )
 
     latest_prediction_record = next((record for record in records if record.source == "prediction"), None)
+    drivers = []
+    if latest_prediction_record is not None:
+        bundle = load_model_bundle()
+        probability = float(latest_prediction_record.riskScore) / 100.0
+        drivers = build_prediction_drivers(
+            bundle,
+            {
+                "age": latest_prediction_record.age,
+                "bmi": latest_prediction_record.bmi,
+                "glucose": latest_prediction_record.glucose,
+                "blood_pressure": latest_prediction_record.bloodPressure,
+                "insulin": latest_prediction_record.insulin,
+                "family_history": latest_prediction_record.familyHistory,
+            },
+            probability,
+        )
 
     return DashboardResponse(
         latest_prediction=(
@@ -68,6 +86,7 @@ async def build_dashboard_snapshot(user_id: str) -> DashboardResponse:
                 category=latest_prediction_record.category,
                 confidence=latest_prediction_record.confidence or 0.0,
                 insights=list(latest_prediction_record.insights),
+                drivers=drivers,
                 record_id=latest_prediction_record.id,
                 created_at=latest_prediction_record.recordedAt,
             )
