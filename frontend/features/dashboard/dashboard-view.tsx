@@ -8,6 +8,7 @@ import { clearDashboardHistory, fetchDashboard } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import type { DashboardSnapshot, PredictionResult } from "@/lib/types";
 import { AssistantLaunchCard } from "@/features/assistant/assistant-launch-card";
+import { CareSummaryCard } from "@/features/dashboard/care-summary-card";
 import { EmptyDashboard } from "@/features/dashboard/empty-dashboard";
 import { InsightsPanel } from "@/features/dashboard/insights-panel";
 import { MetricsComparisonChart } from "@/features/dashboard/metrics-comparison-chart";
@@ -152,6 +153,10 @@ export function DashboardView() {
           latestPrediction={snapshot.latest_prediction}
           latestPredictionRecord={latestPredictionRecord}
         />
+      </section>
+
+      <section className="mt-8">
+        <CareSummaryCard user={user} snapshot={snapshot} />
       </section>
 
       <section className="mt-8">
