@@ -8,6 +8,8 @@ from app.schemas.chat import ChatMessage, ChatRequest, ChatResponse
 from app.utils.config import get_settings
 from app.utils.database import db
 
+# This module handles the core logic for generating AI-driven chat responses in the GlucoX app
+
 settings = get_settings()
 
 MAX_CONTEXT_RECORDS = 10
@@ -183,6 +185,7 @@ def _build_health_context(
 
     return "\n".join(lines)
 
+// this is where imma give personality to the assistant
 
 def _build_system_prompt(user: CurrentUser, health_context: str) -> str:
     return (

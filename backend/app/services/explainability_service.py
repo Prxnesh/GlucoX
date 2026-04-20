@@ -7,6 +7,8 @@ import pandas as pd
 
 from app.schemas.prediction import PredictionDriver
 
+#This module implements the logic for generating explanations of the diabetes risk predictions, including identifying key drivers and insights based on the input features and model behavior.
+
 FEATURE_ORDER = ["age", "bmi", "glucose", "blood_pressure", "insulin", "family_history"]
 
 FEATURE_LABELS = {

@@ -8,6 +8,8 @@ from app.utils.config import get_settings
 from app.utils.database import db
 from app.utils.security import create_access_token, decode_access_token, get_password_hash, verify_password
 
+# This module handles user authentication, including registration, login, and token-based session management.
+
 bearer_scheme = HTTPBearer(auto_error=False)
 settings = get_settings()
 

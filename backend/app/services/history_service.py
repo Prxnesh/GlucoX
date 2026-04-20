@@ -5,7 +5,7 @@ from app.services.explainability_service import build_prediction_drivers
 from app.services.model_service import load_model_bundle
 from app.prisma_client.fields import Json
 from app.utils.database import db
-
+This module handles the creation and retrieval of health records and reports for the user's dashboard, including storing prediction results and building the data structure for the dashboard view.
 
 async def create_health_record(
     *,
