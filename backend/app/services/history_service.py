@@ -1,5 +1,5 @@
 from app.schemas.prediction import PredictionResponse
-from app.schemas.record import DashboardResponse, HealthRecordResponse
+from app.schemas.record import ClearHistoryResponse, DashboardResponse, HealthRecordResponse
 from app.schemas.report import ReportExtractionResponse
 from app.prisma_client.fields import Json
 from app.utils.database import db
@@ -104,5 +104,15 @@ async def build_dashboard_snapshot(user_id: str) -> DashboardResponse:
             )
             for report in reports
         ],
+    )
+
+
+async def clear_dashboard_history(user_id: str) -> ClearHistoryResponse:
+    deleted_records = await db.healthrecord.delete_many(where={"userId": user_id})
+    deleted_reports = await db.reportextraction.delete_many(where={"userId": user_id})
+
+    return ClearHistoryResponse(
+        deleted_records=deleted_records,
+        deleted_reports=deleted_reports,
     )
 

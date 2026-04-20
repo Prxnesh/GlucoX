@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Trash2 } from "lucide-react";
 
-import { fetchDashboard } from "@/lib/api";
+import { clearDashboardHistory, fetchDashboard } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import type { DashboardSnapshot, PredictionResult } from "@/lib/types";
 import { AssistantLaunchCard } from "@/features/assistant/assistant-launch-card";
@@ -30,6 +30,7 @@ export function DashboardView() {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot>(initialSnapshot);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
 
   const loadDashboard = useCallback(async () => {
     if (!token) {
@@ -67,6 +68,32 @@ export function DashboardView() {
     void loadDashboard();
   };
 
+  const handleClearHistory = async () => {
+    if (!token || isClearing) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Clear all saved health history? This removes predictions and report entries for your account."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsClearing(true);
+    setError(null);
+
+    try {
+      await clearDashboardHistory(token);
+      setSnapshot(initialSnapshot);
+    } catch (clearError) {
+      setError(clearError instanceof Error ? clearError.message : "Unable to clear history.");
+    } finally {
+      setIsClearing(false);
+    }
+  };
+
   if (!ready || (loading && !snapshot.records.length && !snapshot.reports.length && !snapshot.latest_prediction)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -97,6 +124,16 @@ export function DashboardView() {
               Review your latest risk score, track lab shifts over time, and turn static reports into useful guidance.
             </p>
           </div>
+
+          <button
+            type="button"
+            className="inline-flex items-center gap-2 rounded-full border border-rose-200 bg-white/80 px-4 py-2 text-sm font-semibold text-rose-700 shadow-[var(--shadow-card)] transition-colors hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-rose-500/25 dark:bg-white/8 dark:text-rose-200 dark:hover:bg-rose-500/12"
+            onClick={() => void handleClearHistory()}
+            disabled={isClearing || loading}
+          >
+            <Trash2 className="h-4 w-4" />
+            {isClearing ? "Clearing history..." : "Clear history"}
+          </button>
         </div>
       </section>
 

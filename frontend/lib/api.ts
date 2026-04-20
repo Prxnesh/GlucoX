@@ -1,5 +1,6 @@
 import type {
   AuthResponse,
+  ClearHistoryResult,
   DashboardSnapshot,
   HealthAssistantMessage,
   HealthAssistantResponse,
@@ -79,6 +80,13 @@ export async function analyzeReport(token: string, file: File) {
 
 export async function fetchDashboard(token: string) {
   return request<DashboardSnapshot>("/records/dashboard", {
+    token,
+  });
+}
+
+export async function clearDashboardHistory(token: string) {
+  return request<ClearHistoryResult>("/records/history", {
+    method: "DELETE",
     token,
   });
 }

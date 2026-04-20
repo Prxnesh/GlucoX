@@ -27,3 +27,8 @@ class DashboardResponse(BaseModel):
     records: list[HealthRecordResponse]
     reports: list[ReportExtractionResponse]
 
+
+class ClearHistoryResponse(BaseModel):
+    deleted_records: int
+    deleted_reports: int
+

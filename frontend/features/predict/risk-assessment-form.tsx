@@ -66,6 +66,15 @@ const quickSamples = [
   },
 ] as const;
 
+const defaultValues = {
+  age: 36,
+  bmi: 28.6,
+  glucose: 134,
+  blood_pressure: 82,
+  insulin: 88,
+  family_history: false,
+} as const;
+
 export function RiskAssessmentForm({
   onCreated,
 }: {
@@ -77,14 +86,7 @@ export function RiskAssessmentForm({
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      age: 36,
-      bmi: 28.6,
-      glucose: 134,
-      blood_pressure: 82,
-      insulin: 88,
-      family_history: false,
-    },
+    defaultValues,
   });
 
   const onSubmit = form.handleSubmit((values) => {
@@ -131,6 +133,17 @@ export function RiskAssessmentForm({
                   {sample.label}
                 </Button>
               ))}
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  form.reset(defaultValues);
+                  setError(null);
+                }}
+              >
+                Clear form
+              </Button>
             </div>
           </div>
 

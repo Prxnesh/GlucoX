@@ -60,6 +60,11 @@ export type DashboardSnapshot = {
   reports: ReportExtraction[];
 };
 
+export type ClearHistoryResult = {
+  deleted_records: number;
+  deleted_reports: number;
+};
+
 export type HealthAssistantRole = "user" | "assistant";
 
 export type HealthAssistantMessage = {
